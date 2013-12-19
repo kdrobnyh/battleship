@@ -117,16 +117,11 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="Service References\BattleshipServerRef\battleship.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\BattleshipServerRef\battleship1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\BattleshipServerRef\BattleshipService.wsdl" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -135,9 +130,16 @@
     <WCFMetadataStorage Include="Service References\BattleshipServerRef\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\BattleshipServerRef\battleship.disco" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="Service References\BattleshipServerRef\battleship3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BattleshipServerRef\battleship31.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BattleshipServerRef\battleship32.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BattleshipServerRef\BattleshipService1.wsdl" />
     <None Include="Service References\BattleshipServerRef\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +156,9 @@
       <Project>{c1943468-8cd5-48c7-bdc0-98afc252832a}</Project>
       <Name>battleship_common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\BattleshipServerRef\battleship1.disco" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

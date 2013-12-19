@@ -19,13 +19,14 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://localhost:8080/battleship" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://localhost:80/battleship" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="battleship.xsd" MetadataType="Schema" ID="8fc1310c-db66-438a-ae16-994319568082" SourceId="1" SourceUrl="http://localhost:8080/battleship?xsd=xsd0" />
-    <MetadataFile FileName="battleship1.xsd" MetadataType="Schema" ID="ab86726e-3740-43b3-be97-e6c4e2d0d1a7" SourceId="1" SourceUrl="http://localhost:8080/battleship?xsd=xsd1" />
-    <MetadataFile FileName="battleship.disco" MetadataType="Disco" ID="0d1ff793-abda-4fbb-ac7f-34df6e6a3899" SourceId="1" SourceUrl="http://localhost:8080/battleship?disco" />
-    <MetadataFile FileName="BattleshipService.wsdl" MetadataType="Wsdl" ID="c3412a8d-8d23-4628-ada3-1241bc5c6656" SourceId="1" SourceUrl="http://localhost:8080/battleship?wsdl" />
+    <MetadataFile FileName="battleship3.xsd" MetadataType="Schema" ID="7f580463-7536-4519-8f39-878a9b1c8b21" SourceId="1" SourceUrl="http://localhost/battleship?xsd=xsd1" />
+    <MetadataFile FileName="BattleshipService1.wsdl" MetadataType="Wsdl" ID="b8ddd789-3d12-4df9-a171-40ac6e43ae6e" SourceId="1" SourceUrl="http://localhost/battleship?wsdl" />
+    <MetadataFile FileName="battleship31.xsd" MetadataType="Schema" ID="44b0ed28-0ae7-45c8-b30d-22c20615abaa" SourceId="1" SourceUrl="http://localhost/battleship?xsd=xsd2" />
+    <MetadataFile FileName="battleship1.disco" MetadataType="Disco" ID="8538c385-42ed-4b0d-aec9-eaadb6e1f2d6" SourceId="1" SourceUrl="http://localhost/battleship?disco" />
+    <MetadataFile FileName="battleship32.xsd" MetadataType="Schema" ID="3ed32768-eb6a-4a0f-b270-ead7ac0b3756" SourceId="1" SourceUrl="http://localhost/battleship?xsd=xsd0" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

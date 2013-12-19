@@ -13,9 +13,8 @@
             <Grid Background="White">
                 <Label FontSize="20" FontWeight="Bold" HorizontalContentAlignment="Center" Content="Welcome!" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top" Height="40"/>
                 <Label FontSize="20" HorizontalContentAlignment="Right" Content="Login:" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" Height="40" Width="70"/>
-                <TextBox FontSize="20" HorizontalAlignment="Left" Height="40" Margin="85,55,0,0" TextWrapping="Wrap" Text="User" VerticalAlignment="Top" Width="195"/>
-                <Button FontSize="20" Content="Connect!" HorizontalAlignment="Left" Margin="85,100,0,0" VerticalAlignment="Top" Width="195" Height="40"/>
-
+                <TextBox Name="Login" FontSize="20" HorizontalAlignment="Left" Height="40" Margin="85,55,0,0" TextWrapping="Wrap" Text="User" VerticalAlignment="Top" Width="195"/>
+                <Button Name="Connect" FontSize="20" Content="Connect!" HorizontalAlignment="Left" Margin="85,100,0,0" VerticalAlignment="Top" Width="195" Height="40" Click="Button_Click"/>
             </Grid>
         </Border>
     </Grid>

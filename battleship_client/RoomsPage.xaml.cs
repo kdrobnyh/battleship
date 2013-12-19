@@ -25,16 +25,10 @@ namespace battleship_client
         private ObservableCollection<Room> rooms = new ObservableCollection<Room>();
         public RoomsPage()
         {
+            this.DataContext = rooms;
             Room room = new Room("ya", DateTime.Now);
             InitializeComponent();
             rooms.Add(room);
-        }
-        public ObservableCollection<Room> Rooms
-        {
-            get
-            {
-                return rooms;
-            }
         }
     }
 }

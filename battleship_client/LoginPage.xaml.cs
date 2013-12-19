@@ -20,9 +20,38 @@ namespace battleship_client
     /// </summary>
     public partial class LoginPage : UserControl
     {
-        public LoginPage()
+        private Main main;
+        public LoginPage(Main main)
         {
             InitializeComponent();
+            this.main = main;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Connect.IsEnabled = false;
+            Login.IsEnabled = false;
+            try
+            {
+                Connect.IsEnabled = true;
+                Login.IsEnabled = true;
+                string GUID = main.Client.Join(Login.Text);
+                if (GUID == "")
+                {
+                    MessageBox.Show("User with the same name is exists...", "Wrong username", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    ((RoomsPage)main.Content).grid.Children.Remove(this);
+                    main.GUID = GUID;
+                    main.Name = Login.Text;
+                }
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message, "Can't connect to server!", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
+            }
         }
     }
 }

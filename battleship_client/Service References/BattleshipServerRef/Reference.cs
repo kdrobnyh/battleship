@@ -12,20 +12,36 @@ namespace battleship_client.BattleshipServerRef {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="BattleshipServerRef.IBattleshipService", SessionMode=System.ServiceModel.SessionMode.Required)]
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="BattleshipServerRef.IBattleshipService", CallbackContract=typeof(battleship_client.BattleshipServerRef.IBattleshipServiceCallback), SessionMode=System.ServiceModel.SessionMode.Required)]
     public interface IBattleshipService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBattleshipService/Join", ReplyAction="http://tempuri.org/IBattleshipService/JoinResponse")]
-        bool Join(string name);
+        string Join(string name);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBattleshipService/Join", ReplyAction="http://tempuri.org/IBattleshipService/JoinResponse")]
-        System.Threading.Tasks.Task<bool> JoinAsync(string name);
+        System.Threading.Tasks.Task<string> JoinAsync(string name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBattleshipService/CreateRoom", ReplyAction="http://tempuri.org/IBattleshipService/CreateRoomResponse")]
+        bool CreateRoom(string name, string GUID);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBattleshipService/CreateRoom", ReplyAction="http://tempuri.org/IBattleshipService/CreateRoomResponse")]
+        System.Threading.Tasks.Task<bool> CreateRoomAsync(string name, string GUID);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, IsTerminating=true, Action="http://tempuri.org/IBattleshipService/Leave")]
-        void Leave(string name);
+        void Leave(string name, string GUID);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, IsTerminating=true, Action="http://tempuri.org/IBattleshipService/Leave")]
-        System.Threading.Tasks.Task LeaveAsync(string name);
+        System.Threading.Tasks.Task LeaveAsync(string name, string GUID);
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public interface IBattleshipServiceCallback {
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/RoomAdded")]
+        void RoomAdded(battleship_common.Room room);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/RoomDeleted")]
+        void RoomDeleted(string name);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -34,41 +50,50 @@ namespace battleship_client.BattleshipServerRef {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class BattleshipServiceClient : System.ServiceModel.ClientBase<battleship_client.BattleshipServerRef.IBattleshipService>, battleship_client.BattleshipServerRef.IBattleshipService {
+    public partial class BattleshipServiceClient : System.ServiceModel.DuplexClientBase<battleship_client.BattleshipServerRef.IBattleshipService>, battleship_client.BattleshipServerRef.IBattleshipService {
         
-        public BattleshipServiceClient() {
+        public BattleshipServiceClient(System.ServiceModel.InstanceContext callbackInstance) : 
+                base(callbackInstance) {
         }
         
-        public BattleshipServiceClient(string endpointConfigurationName) : 
-                base(endpointConfigurationName) {
+        public BattleshipServiceClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName) : 
+                base(callbackInstance, endpointConfigurationName) {
         }
         
-        public BattleshipServiceClient(string endpointConfigurationName, string remoteAddress) : 
-                base(endpointConfigurationName, remoteAddress) {
+        public BattleshipServiceClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, string remoteAddress) : 
+                base(callbackInstance, endpointConfigurationName, remoteAddress) {
         }
         
-        public BattleshipServiceClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(endpointConfigurationName, remoteAddress) {
+        public BattleshipServiceClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(callbackInstance, endpointConfigurationName, remoteAddress) {
         }
         
-        public BattleshipServiceClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(binding, remoteAddress) {
+        public BattleshipServiceClient(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(callbackInstance, binding, remoteAddress) {
         }
         
-        public bool Join(string name) {
+        public string Join(string name) {
             return base.Channel.Join(name);
         }
         
-        public System.Threading.Tasks.Task<bool> JoinAsync(string name) {
+        public System.Threading.Tasks.Task<string> JoinAsync(string name) {
             return base.Channel.JoinAsync(name);
         }
         
-        public void Leave(string name) {
-            base.Channel.Leave(name);
+        public bool CreateRoom(string name, string GUID) {
+            return base.Channel.CreateRoom(name, GUID);
         }
         
-        public System.Threading.Tasks.Task LeaveAsync(string name) {
-            return base.Channel.LeaveAsync(name);
+        public System.Threading.Tasks.Task<bool> CreateRoomAsync(string name, string GUID) {
+            return base.Channel.CreateRoomAsync(name, GUID);
+        }
+        
+        public void Leave(string name, string GUID) {
+            base.Channel.Leave(name, GUID);
+        }
+        
+        public System.Threading.Tasks.Task LeaveAsync(string name, string GUID) {
+            return base.Channel.LeaveAsync(name, GUID);
         }
     }
 }
