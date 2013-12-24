@@ -15,10 +15,10 @@
   </wsp:Policy>
   <wsdl:types>
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
-      <xsd:import schemaLocation="http://localhost/battleship?xsd=xsd0" namespace="http://tempuri.org/" />
-      <xsd:import schemaLocation="http://localhost/battleship?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import schemaLocation="http://localhost/battleship?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-      <xsd:import schemaLocation="http://localhost/battleship?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/battleship_common" />
+      <xsd:import schemaLocation="http://localhost:82/Battleship?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:82/Battleship?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:82/Battleship?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://localhost:82/Battleship?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/battleship_common" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IBattleshipService_Join_InputMessage">
@@ -257,9 +257,9 @@
   </wsdl:binding>
   <wsdl:service name="BattleshipService">
     <wsdl:port name="WSDualHttpBinding_IBattleshipService" binding="tns:WSDualHttpBinding_IBattleshipService">
-      <soap12:address location="http://localhost/battleship" />
+      <soap12:address location="http://localhost:82/Battleship" />
       <wsa10:EndpointReference>
-        <wsa10:Address>http://localhost/battleship</wsa10:Address>
+        <wsa10:Address>http://localhost:82/Battleship</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>

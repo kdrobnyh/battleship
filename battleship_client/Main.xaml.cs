@@ -7,19 +7,22 @@ using System.Windows.Controls;
 
 namespace battleship_client
 {
-    /// <summary>
-    /// Interaction logic for Main.xaml
-    /// </summary>
+    //class ClientInstance
+    //{
+    //    ClientInstance(string name, string GUID);
+    //}
+
     public partial class Main : Window, IBattleshipServiceCallback
     {
         private BattleshipServiceClient client;
         private string _GUID = "";
         private string _name;
+        LoginPage login;
 
         public Main()
         {
             InitializeComponent();
-            
+
             this.client = new BattleshipServiceClient(new InstanceContext(this));
             Navigate(new RoomsPage());
             Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
@@ -32,7 +35,7 @@ namespace battleship_client
             this.MinWidth = nextPage.MinWidth + 20;
             this.Height = nextPage.MinHeight + 40;
             this.Width = nextPage.MinWidth + 20;
-            LoginPage login = new LoginPage(this);
+            login = new LoginPage(this);
             ((RoomsPage)this.Content).grid.Children.Add(login);
             login.SetValue(Grid.RowSpanProperty, 2);
             //this.panel.Children.Add(nextPage);
@@ -40,7 +43,18 @@ namespace battleship_client
             //this.Content = 
         }
 
-        public void RoomAdded(Room room)
+        public void LogIn(string GUID)
+        {
+            this._GUID = GUID;
+            login.LoggedIn();
+        }
+
+        public void UserNameExists()
+        {
+
+        }
+
+        public void RoomCreated(battleship_common.Room room)
         {
             throw new NotImplementedException();
         }
@@ -49,6 +63,37 @@ namespace battleship_client
         {
             throw new NotImplementedException();
         }
+
+        public void FatalError(string error)
+        {
+
+        }
+
+        public void GoodField()
+        {
+
+        }
+
+        public void BadField(string comment)
+        {
+
+        }
+
+        public void PrepareToGame(string opponent_name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StartGame()
+        {
+
+        }
+
+        public void YouTurn()
+        {
+
+        }
+
         public BattleshipServiceClient Client
         {
             get

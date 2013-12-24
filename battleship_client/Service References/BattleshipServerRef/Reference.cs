@@ -15,33 +15,93 @@ namespace battleship_client.BattleshipServerRef {
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="BattleshipServerRef.IBattleshipService", CallbackContract=typeof(battleship_client.BattleshipServerRef.IBattleshipServiceCallback), SessionMode=System.ServiceModel.SessionMode.Required)]
     public interface IBattleshipService {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBattleshipService/Join", ReplyAction="http://tempuri.org/IBattleshipService/JoinResponse")]
-        string Join(string name);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/Join")]
+        void Join(string name);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBattleshipService/Join", ReplyAction="http://tempuri.org/IBattleshipService/JoinResponse")]
-        System.Threading.Tasks.Task<string> JoinAsync(string name);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/Join")]
+        System.Threading.Tasks.Task JoinAsync(string name);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBattleshipService/CreateRoom", ReplyAction="http://tempuri.org/IBattleshipService/CreateRoomResponse")]
-        bool CreateRoom(string name, string GUID);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/GetRooms")]
+        void GetRooms(string name, string GUID);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBattleshipService/CreateRoom", ReplyAction="http://tempuri.org/IBattleshipService/CreateRoomResponse")]
-        System.Threading.Tasks.Task<bool> CreateRoomAsync(string name, string GUID);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/GetRooms")]
+        System.Threading.Tasks.Task GetRoomsAsync(string name, string GUID);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, IsTerminating=true, Action="http://tempuri.org/IBattleshipService/Leave")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/Leave")]
         void Leave(string name, string GUID);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, IsTerminating=true, Action="http://tempuri.org/IBattleshipService/Leave")]
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/Leave")]
         System.Threading.Tasks.Task LeaveAsync(string name, string GUID);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/CreateRoom")]
+        void CreateRoom(string name, string GUID);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/CreateRoom")]
+        System.Threading.Tasks.Task CreateRoomAsync(string name, string GUID);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/DeleteRoom")]
+        void DeleteRoom(string name, string GUID);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/DeleteRoom")]
+        System.Threading.Tasks.Task DeleteRoomAsync(string name, string GUID);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/JoinGame")]
+        void JoinGame(string name, string GUID, string oponent_name);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/JoinGame")]
+        System.Threading.Tasks.Task JoinGameAsync(string name, string GUID, string oponent_name);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/ReadyForGame")]
+        void ReadyForGame(string name, string GUID, bool[] field);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/ReadyForGame")]
+        System.Threading.Tasks.Task ReadyForGameAsync(string name, string GUID, bool[] field);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/SendMessage")]
+        void SendMessage(string name, string GUID, string text);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/SendMessage")]
+        System.Threading.Tasks.Task SendMessageAsync(string name, string GUID, string text);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/Turn")]
+        void Turn(string name, string GUID, battleship_common.ShootType type, int x, int y);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/Turn")]
+        System.Threading.Tasks.Task TurnAsync(string name, string GUID, battleship_common.ShootType type, int x, int y);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public interface IBattleshipServiceCallback {
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/RoomAdded")]
-        void RoomAdded(battleship_common.Room room);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/LogIn")]
+        void LogIn(string GUID);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/UserNameExists")]
+        void UserNameExists();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/RoomCreated")]
+        void RoomCreated(battleship_common.Room room);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/RoomDeleted")]
         void RoomDeleted(string name);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/FatalError")]
+        void FatalError(string error);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/PrepareToGame")]
+        void PrepareToGame(string opponent_name);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/GoodField")]
+        void GoodField();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/BadField")]
+        void BadField(string comment);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/StartGame")]
+        void StartGame();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/YouTurn")]
+        void YouTurn();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -72,20 +132,20 @@ namespace battleship_client.BattleshipServerRef {
                 base(callbackInstance, binding, remoteAddress) {
         }
         
-        public string Join(string name) {
-            return base.Channel.Join(name);
+        public void Join(string name) {
+            base.Channel.Join(name);
         }
         
-        public System.Threading.Tasks.Task<string> JoinAsync(string name) {
+        public System.Threading.Tasks.Task JoinAsync(string name) {
             return base.Channel.JoinAsync(name);
         }
         
-        public bool CreateRoom(string name, string GUID) {
-            return base.Channel.CreateRoom(name, GUID);
+        public void GetRooms(string name, string GUID) {
+            base.Channel.GetRooms(name, GUID);
         }
         
-        public System.Threading.Tasks.Task<bool> CreateRoomAsync(string name, string GUID) {
-            return base.Channel.CreateRoomAsync(name, GUID);
+        public System.Threading.Tasks.Task GetRoomsAsync(string name, string GUID) {
+            return base.Channel.GetRoomsAsync(name, GUID);
         }
         
         public void Leave(string name, string GUID) {
@@ -94,6 +154,54 @@ namespace battleship_client.BattleshipServerRef {
         
         public System.Threading.Tasks.Task LeaveAsync(string name, string GUID) {
             return base.Channel.LeaveAsync(name, GUID);
+        }
+        
+        public void CreateRoom(string name, string GUID) {
+            base.Channel.CreateRoom(name, GUID);
+        }
+        
+        public System.Threading.Tasks.Task CreateRoomAsync(string name, string GUID) {
+            return base.Channel.CreateRoomAsync(name, GUID);
+        }
+        
+        public void DeleteRoom(string name, string GUID) {
+            base.Channel.DeleteRoom(name, GUID);
+        }
+        
+        public System.Threading.Tasks.Task DeleteRoomAsync(string name, string GUID) {
+            return base.Channel.DeleteRoomAsync(name, GUID);
+        }
+        
+        public void JoinGame(string name, string GUID, string oponent_name) {
+            base.Channel.JoinGame(name, GUID, oponent_name);
+        }
+        
+        public System.Threading.Tasks.Task JoinGameAsync(string name, string GUID, string oponent_name) {
+            return base.Channel.JoinGameAsync(name, GUID, oponent_name);
+        }
+        
+        public void ReadyForGame(string name, string GUID, bool[] field) {
+            base.Channel.ReadyForGame(name, GUID, field);
+        }
+        
+        public System.Threading.Tasks.Task ReadyForGameAsync(string name, string GUID, bool[] field) {
+            return base.Channel.ReadyForGameAsync(name, GUID, field);
+        }
+        
+        public void SendMessage(string name, string GUID, string text) {
+            base.Channel.SendMessage(name, GUID, text);
+        }
+        
+        public System.Threading.Tasks.Task SendMessageAsync(string name, string GUID, string text) {
+            return base.Channel.SendMessageAsync(name, GUID, text);
+        }
+        
+        public void Turn(string name, string GUID, battleship_common.ShootType type, int x, int y) {
+            base.Channel.Turn(name, GUID, type, x, y);
+        }
+        
+        public System.Threading.Tasks.Task TurnAsync(string name, string GUID, battleship_common.ShootType type, int x, int y) {
+            return base.Channel.TurnAsync(name, GUID, type, x, y);
         }
     }
 }

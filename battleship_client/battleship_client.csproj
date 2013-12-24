@@ -139,6 +139,9 @@
     <None Include="Service References\BattleshipServerRef\battleship32.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\BattleshipServerRef\battleship4.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\BattleshipServerRef\BattleshipService1.wsdl" />
     <None Include="Service References\BattleshipServerRef\configuration91.svcinfo" />
   </ItemGroup>

@@ -7,13 +7,39 @@ using System.Threading.Tasks;
 
 namespace battleship_common
 {
-    [ServiceContract]
+    public enum ShootType {Shoot};
+
     public interface IClientCallback
     {
         [OperationContract(IsOneWay = true)]
-        void RoomAdded(Room room);
+        void LogIn(string GUID);
+
+        [OperationContract(IsOneWay = true)]
+        void UserNameExists();
+
+        [OperationContract(IsOneWay = true)]
+        void RoomCreated(Room room);
 
         [OperationContract(IsOneWay = true)]
         void RoomDeleted(string name);
+
+        [OperationContract(IsOneWay = true)]
+        void FatalError(string error);
+
+        [OperationContract(IsOneWay = true)]
+        void PrepareToGame(string opponent_name);
+
+        [OperationContract(IsOneWay = true)]
+        void GoodField();
+
+        [OperationContract(IsOneWay = true)]
+        void BadField(string comment);
+
+        [OperationContract(IsOneWay = true)]
+        void StartGame();
+
+        [OperationContract(IsOneWay = true)]
+        void YouTurn();
     }
 }
+
