@@ -22,13 +22,50 @@ namespace battleship_client
     /// </summary>
     public partial class RoomsPage : UserControl
     {
-        private ObservableCollection<Room> rooms = new ObservableCollection<Room>();
-        public RoomsPage()
+        private ObservableCollection<Room> _rooms = new ObservableCollection<Room>();
+        private Main main;
+
+        public RoomsPage(Main main)
         {
-            this.DataContext = rooms;
-            Room room = new Room("ya", DateTime.Now);
+            this.main = main;
+            this.DataContext = _rooms;
+            //Room room = new Room("ya", DateTime.Now);
             InitializeComponent();
-            rooms.Add(room);
+            //rooms.Add(room);
         }
+
+        public void AddRoom(Room room)
+        {
+            _rooms.Add(room);
+        }
+
+        public void DeleteRoom(string name)
+        {
+            IEnumerable<Room> rooms =
+                from room in _rooms
+                where room.Name == name
+                select room;
+            if (rooms.Count<Room>() > 0)
+            {
+                _rooms.Remove(rooms.First<Room>());
+            }
+        }
+
+        private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            MessageBox.Show(((Room)((DataGrid)sender).CurrentCell.Item).Name, "Good", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        private void joinButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void createButton_Click(object sender, RoutedEventArgs e)
+        {
+            main.CreateRoom();
+        }
+
+
     }
 }

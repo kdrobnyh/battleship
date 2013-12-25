@@ -10,6 +10,8 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="CreationTime" type="xs:dateTime" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="creationTime" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Room" nillable="true" type="tns:Room" />

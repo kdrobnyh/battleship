@@ -8,10 +8,11 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition/>
+            <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
         <Label FontSize="20" Content="Available games" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="40" Width="160" RenderTransformOrigin="-2.328,-1.071"/>
-        <Button FontSize="20" Content="Create new game" HorizontalAlignment="Stretch" Margin="175,10,10,0" VerticalAlignment="Top" Height="40"/>
-        <DataGrid ItemsSource="{Binding}" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10" Grid.Row="1" CanUserAddRows="False">
+        <Button Name="createButton" FontSize="20" Content="Create new game" HorizontalAlignment="Stretch" Margin="175,10,10,0" VerticalAlignment="Top" Height="40" Click="createButton_Click"/>
+        <DataGrid Name="roomsGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10" Grid.Row="1" CanUserAddRows="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Player" Binding="{Binding Name}" CanUserReorder="True" CanUserResize="True" 
                                             CanUserSort="True" Width="*" IsReadOnly="True"/>
@@ -19,5 +20,6 @@
                                             CanUserSort="True" Width="*" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
+        <Button Name="joinButton" FontSize="20" Content="Join" HorizontalAlignment="Stretch" Margin="175,10,10,0" VerticalAlignment="Top" Height="40" Grid.Row="2" Click="joinButton_Click"/>
     </Grid>
 </UserControl>

@@ -17,51 +17,76 @@ namespace battleship_client
         private BattleshipServiceClient client;
         private string _GUID = "";
         private string _name;
-        LoginPage login;
+        LoginPage loginPage;
+        RoomsPage roomsPage;
 
         public Main()
         {
             InitializeComponent();
-
             this.client = new BattleshipServiceClient(new InstanceContext(this));
-            Navigate(new RoomsPage());
-            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+            roomsPage = new RoomsPage(this);
+            SetContent(roomsPage);
+            loginPage = new LoginPage(this);
+            ((RoomsPage)this.Content).grid.Children.Add(loginPage);
+            loginPage.SetValue(Grid.RowSpanProperty, 2);
+            this.Closing += Dispatcher_ShutdownStarted;
         }
 
-        public void Navigate(UserControl nextPage)
+        public void Join(string name)
+        {
+            try
+            {
+                this._name = name;
+                client.Join(name);
+            }
+            catch (Exception exception)
+            {
+                CantConnectToServer(exception.Message);
+            }
+        }
+
+        public void CreateRoom()
+        {
+            try
+            {
+                client.CreateRoom(_name, _GUID);
+            }
+            catch (Exception exception)
+            {
+                CantConnectToServer(exception.Message);
+            }
+        }
+
+        private void SetContent(UserControl nextPage)
         {
             this.Content = nextPage;
             this.MinHeight = nextPage.MinHeight + 40;
             this.MinWidth = nextPage.MinWidth + 20;
             this.Height = nextPage.MinHeight + 40;
             this.Width = nextPage.MinWidth + 20;
-            login = new LoginPage(this);
-            ((RoomsPage)this.Content).grid.Children.Add(login);
-            login.SetValue(Grid.RowSpanProperty, 2);
-            //this.panel.Children.Add(nextPage);
-            //cc.Content = nextPage;
-            //this.Content = 
         }
 
         public void LogIn(string GUID)
         {
             this._GUID = GUID;
-            login.LoggedIn();
+            ((RoomsPage)this.Content).grid.Children.Remove(loginPage);
+            loginPage = null;
         }
 
         public void UserNameExists()
         {
-
+            MessageBox.Show("User name already exists on server!", "Retry!", MessageBoxButton.OK, MessageBoxImage.Warning);
+            loginPage.Retry();
         }
 
         public void RoomCreated(battleship_common.Room room)
         {
-            throw new NotImplementedException();
+            roomsPage.AddRoom(room);
         }
 
         public void RoomDeleted(string name)
         {
-            throw new NotImplementedException();
+            roomsPage.DeleteRoom(name);
         }
 
         public void FatalError(string error)
@@ -94,24 +119,15 @@ namespace battleship_client
 
         }
 
-        public BattleshipServiceClient Client
+        public void YouCheated()
         {
-            get
-            {
-                return client;
-            }
+
         }
 
-        public string GUID
+        public void CantConnectToServer(string message)
         {
-            get { return _GUID; }
-            set { _GUID = value; }
-        }
-
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
+            MessageBox.Show(message, "Can't connect to server!", MessageBoxButton.OK, MessageBoxImage.Error);
+            Application.Current.Shutdown();
         }
 
         private void Dispatcher_ShutdownStarted(object sender, EventArgs e)

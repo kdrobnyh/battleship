@@ -16,7 +16,7 @@ namespace battleship_client
             this.main = main;
         }
 
-        public void LoggedIn()
+        public void Retry()
         {
             Connect.IsEnabled = true;
             Login.IsEnabled = true;
@@ -26,29 +26,7 @@ namespace battleship_client
         {
             Connect.IsEnabled = false;
             Login.IsEnabled = false;
-            try
-            {
-                // Connect.IsEnabled = true;
-                // Login.IsEnabled = true;
-                //main.Client.Join();
-                main.Client.Join(Login.Text);
-                main.Name = Login.Text;
-                // if (GUID == "")
-                // {
-                //     MessageBox.Show("User with the same name is exists...", "Wrong username", MessageBoxButton.OK, MessageBoxImage.Error);
-                // }
-                // else
-                // {
-                //     ((RoomsPage)main.Content).grid.Children.Remove(this);
-                //     main.GUID = GUID;
-                //     main.Name = Login.Text;
-                // }
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message, "Can't connect to server!", MessageBoxButton.OK, MessageBoxImage.Error);
-                Application.Current.Shutdown();
-            }
+            main.Join(Login.Text);
         }
     }
 }

@@ -9,6 +9,7 @@ namespace battleship_common
 {
     public enum ShootType {Shoot};
 
+    [ServiceContract]
     public interface IClientCallback
     {
         [OperationContract(IsOneWay = true)]
@@ -40,6 +41,9 @@ namespace battleship_common
 
         [OperationContract(IsOneWay = true)]
         void YouTurn();
+
+        [OperationContract(IsOneWay = true)]
+        void YouCheated();
     }
 }
 

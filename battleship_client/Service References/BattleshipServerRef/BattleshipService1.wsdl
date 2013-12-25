@@ -24,9 +24,6 @@
   <wsdl:message name="IBattleshipService_Join_InputMessage">
     <wsdl:part name="parameters" element="tns:Join" />
   </wsdl:message>
-  <wsdl:message name="IBattleshipService_GetRooms_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetRooms" />
-  </wsdl:message>
   <wsdl:message name="IBattleshipService_Leave_InputMessage">
     <wsdl:part name="parameters" element="tns:Leave" />
   </wsdl:message>
@@ -78,12 +75,12 @@
   <wsdl:message name="IBattleshipService_YouTurn_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:YouTurn" />
   </wsdl:message>
+  <wsdl:message name="IBattleshipService_YouCheated_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:YouCheated" />
+  </wsdl:message>
   <wsdl:portType msc:usingSession="true" name="IBattleshipService">
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Join">
       <wsdl:input wsaw:Action="http://tempuri.org/IBattleshipService/Join" message="tns:IBattleshipService_Join_InputMessage" />
-    </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetRooms">
-      <wsdl:input wsaw:Action="http://tempuri.org/IBattleshipService/GetRooms" message="tns:IBattleshipService_GetRooms_InputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Leave">
       <wsdl:input wsaw:Action="http://tempuri.org/IBattleshipService/Leave" message="tns:IBattleshipService_Leave_InputMessage" />
@@ -136,18 +133,15 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="YouTurn">
       <wsdl:output wsaw:Action="http://tempuri.org/IBattleshipService/YouTurn" message="tns:IBattleshipService_YouTurn_OutputCallbackMessage" />
     </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="YouCheated">
+      <wsdl:output wsaw:Action="http://tempuri.org/IBattleshipService/YouCheated" message="tns:IBattleshipService_YouCheated_OutputCallbackMessage" />
+    </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="WSDualHttpBinding_IBattleshipService" type="tns:IBattleshipService">
     <wsp:PolicyReference URI="#WSDualHttpBinding_IBattleshipService_policy" />
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="Join">
       <soap12:operation soapAction="http://tempuri.org/IBattleshipService/Join" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-    </wsdl:operation>
-    <wsdl:operation name="GetRooms">
-      <soap12:operation soapAction="http://tempuri.org/IBattleshipService/GetRooms" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -250,6 +244,12 @@
     </wsdl:operation>
     <wsdl:operation name="YouTurn">
       <soap12:operation soapAction="http://tempuri.org/IBattleshipService/YouTurn" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="YouCheated">
+      <soap12:operation soapAction="http://tempuri.org/IBattleshipService/YouCheated" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

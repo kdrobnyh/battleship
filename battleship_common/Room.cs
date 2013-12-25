@@ -11,7 +11,10 @@ namespace battleship_common
     [DataContract]
     public class Room
     {
+        [DataMember]
         private string name;
+
+        [DataMember]
         private DateTime creationTime;
 
         public Room(string name, DateTime creationTime)
@@ -24,12 +27,14 @@ namespace battleship_common
         public string Name
         {
             get { return name; }
+            set { }
         }
 
         [DataMember]
         public DateTime CreationTime
         {
             get { return creationTime; }
+            set { }
         }
     }
 }

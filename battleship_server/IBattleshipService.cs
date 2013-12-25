@@ -11,9 +11,6 @@ namespace battleship_server
         [OperationContract(IsOneWay = true)]
         void Join(string name);
 
-        [OperationContract(IsOneWay = true)]
-        void GetRooms(string name, string GUID);
-
         [OperationContract(IsOneWay = true)]//, IsTerminating = true)]
         void Leave(string name, string GUID);
 

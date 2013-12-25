@@ -21,12 +21,6 @@ namespace battleship_client.BattleshipServerRef {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/Join")]
         System.Threading.Tasks.Task JoinAsync(string name);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/GetRooms")]
-        void GetRooms(string name, string GUID);
-        
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/GetRooms")]
-        System.Threading.Tasks.Task GetRoomsAsync(string name, string GUID);
-        
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/Leave")]
         void Leave(string name, string GUID);
         
@@ -102,6 +96,9 @@ namespace battleship_client.BattleshipServerRef {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/YouTurn")]
         void YouTurn();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/YouCheated")]
+        void YouCheated();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -138,14 +135,6 @@ namespace battleship_client.BattleshipServerRef {
         
         public System.Threading.Tasks.Task JoinAsync(string name) {
             return base.Channel.JoinAsync(name);
-        }
-        
-        public void GetRooms(string name, string GUID) {
-            base.Channel.GetRooms(name, GUID);
-        }
-        
-        public System.Threading.Tasks.Task GetRoomsAsync(string name, string GUID) {
-            return base.Channel.GetRoomsAsync(name, GUID);
         }
         
         public void Leave(string name, string GUID) {
