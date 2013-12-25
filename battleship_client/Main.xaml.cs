@@ -57,6 +57,18 @@ namespace battleship_client
             }
         }
 
+        public void DeleteRoom()
+        {
+            try
+            {
+                client.DeleteRoom(_name, _GUID);
+            }
+            catch (Exception exception)
+            {
+                CantConnectToServer(exception.Message);
+            }
+        }
+
         private void SetContent(UserControl nextPage)
         {
             this.Content = nextPage;
@@ -81,11 +93,21 @@ namespace battleship_client
 
         public void RoomCreated(battleship_common.Room room)
         {
+            if (room.Name == _name)
+            {
+                WaitingOpponentPage waiting = new WaitingOpponentPage(this);
+                SetContent(waiting);
+            }
             roomsPage.AddRoom(room);
         }
 
         public void RoomDeleted(string name)
         {
+            if (name == _name)
+            {
+                roomsPage.ResetButtons();
+                SetContent(roomsPage);
+            }
             roomsPage.DeleteRoom(name);
         }
 

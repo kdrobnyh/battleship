@@ -34,6 +34,12 @@ namespace battleship_client
             //rooms.Add(room);
         }
 
+        public void ResetButtons()
+        {
+            joinButton.IsEnabled = true;
+            createButton.IsEnabled = true;
+        }
+
         public void AddRoom(Room room)
         {
             _rooms.Add(room);
@@ -63,6 +69,8 @@ namespace battleship_client
 
         private void createButton_Click(object sender, RoutedEventArgs e)
         {
+            createButton.IsEnabled = false;
+            joinButton.IsEnabled = false;
             main.CreateRoom();
         }
 
