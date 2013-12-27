@@ -28,6 +28,9 @@ namespace battleship_common
         void FatalError(string error);
 
         [OperationContract(IsOneWay = true)]
+        void GameNotExists();
+
+        [OperationContract(IsOneWay = true)]
         void PrepareToGame(string opponent_name);
 
         [OperationContract(IsOneWay = true)]

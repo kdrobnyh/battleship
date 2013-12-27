@@ -82,6 +82,9 @@ namespace battleship_client.BattleshipServerRef {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/FatalError")]
         void FatalError(string error);
         
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/GameNotExists")]
+        void GameNotExists();
+        
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/PrepareToGame")]
         void PrepareToGame(string opponent_name);
         

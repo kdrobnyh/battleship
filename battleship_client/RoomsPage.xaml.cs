@@ -34,6 +34,11 @@ namespace battleship_client
             //rooms.Add(room);
         }
 
+        public void SetUsername(string username)
+        {
+            welcome.Content = "Welcome, " + username + "!";
+        }
+
         public void ResetButtons()
         {
             joinButton.IsEnabled = true;
@@ -64,7 +69,18 @@ namespace battleship_client
 
         private void joinButton_Click(object sender, RoutedEventArgs e)
         {
-
+            Room room = (Room)(roomsGrid.SelectedItem);
+            if (room != null)
+            {
+                createButton.IsEnabled = false;
+                joinButton.IsEnabled = false;
+                //MessageBox.Show(room.Name, "Good", MessageBoxButton.OK, MessageBoxImage.Error);
+                main.JoinGame(room.Name);
+            }
+            else
+            {
+                MessageBox.Show("First you need to select the room!", "Try again...", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
         private void createButton_Click(object sender, RoutedEventArgs e)

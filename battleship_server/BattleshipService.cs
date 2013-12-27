@@ -9,9 +9,68 @@ using System.Threading.Tasks;
 
 namespace battleship_server
 {
+    class Field
+    {
+        public Field()
+        {
+            field = new Cell[10, 10];
+            Clear();
+            
+        }
+        private Cell[,] field;
+        public enum Cell
+        {
+            Empty, Fire, DeadShip, Missed
+        }
+
+        public Cell GetCell(int x, int y)
+        {
+            return 0 <= x && x < 10 && 0 <= y && y < 10 ? field[x, y] : Cell.Empty;
+        }
+
+        public void SetCell(int x, int y, Cell cell_type)
+        {
+            if (0 <= x && x < 10 && 0 <= y && y < 10)
+            {
+                field[x, y] = cell_type;
+            }
+        }
+        public void Clear()
+        {
+            int i, j;
+            for (i = 0; i < 10; i++)
+            {
+                for (j = 0; j < 10; j++)
+                {
+                    field[i, j] = Cell.Empty;
+                }
+            }
+        }
+    }
+
     class Game
     {
+        public Game(Client opponent)
+        {
+            this.opponent = opponent;
+        }
+        private Client opponent;
+        public Client Opponent
+        {
+            get
+            {
+                return opponent;
+            }
+        }
+        public void SetField()
+        {
 
+        }
+        public Field field;
+        public int four_count;
+        public int three_count;
+        public int two_count;
+        public int one_count;
     }
 
 
@@ -78,11 +137,54 @@ namespace battleship_server
 
         public void Leave()
         {
+            if (_game != null)
+            {
+                _game.Opponent.YouCheated();
+            }
+        }
 
+        public void YouCheated()
+        {
+            try
+            {
+                Callback.YouCheated();
+            }
+            catch (Exception) { };
         }
 
         public void JoinTo(Client opponent)
         {
+            _game = opponent.LetsPlay(this);
+        }
+
+        public Game LetsPlay(Client opponent)
+        {
+            if (!HaveGame)
+            {
+                _game = new Game(opponent);
+            }
+            return new Game(this);
+        }
+
+        public void SendMessage()
+        {
+
+
+        }
+
+        public void RecieveMessage()
+        {
+
+        }
+
+        public void DoTurn()
+        {
+
+        }
+
+        public void Turn()
+        {
+
 
         }
 
@@ -286,11 +388,16 @@ namespace battleship_server
                     }
                     SecureDeleteClients(failed);
                     return;
+                }           
+                if (clientsDictionary[name].HaveGame)
+                {
+                    Console.WriteLine("Client {0} is gaming now!)", name);
+                    return;
                 }
                 Console.WriteLine("Client {0} wants to delete room, but room does not exists!", name);
                 try
                 {
-                    clientsDictionary[name].Callback.FatalError("Room already created!");
+                    clientsDictionary[name].Callback.FatalError("Room does not exists!");
                 }
                 catch (Exception)
                 {
@@ -306,20 +413,65 @@ namespace battleship_server
             catch (Exception) { }
         }
 
-        public void JoinGame(string name, string GUID, string oponent_name)
+        public void JoinGame(string name, string GUID, string opponent_name)
         {
             if (clientsDictionary.ContainsKey(name) && clientsDictionary[name].CheckGUID(GUID))
             {
-                if (clientsDictionary.ContainsKey(oponent_name) || clientsDictionary[name].HaveRoom || clientsDictionary[name].HaveGame)
+                if (clientsDictionary.ContainsKey(opponent_name))
                 {
-                    clientsDictionary[name].JoinTo(clientsDictionary[oponent_name]);
+                    if (clientsDictionary[opponent_name].HaveRoom && !clientsDictionary[opponent_name].HaveGame)
+                    {
+                        try
+                        {
+                            clientsDictionary[name].Callback.PrepareToGame(opponent_name);
+                        }
+                        catch (Exception)
+                        {
+                            SecureDeleteClient(clientsDictionary[name]);
+                            return;
+                        }
+                        clientsDictionary[name].JoinTo(clientsDictionary[opponent_name]);
+                        try
+                        {
+                            clientsDictionary[opponent_name].Callback.PrepareToGame(name);
+                        }
+                        catch (Exception)
+                        {
+                            SecureDeleteClient(clientsDictionary[opponent_name]);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            clientsDictionary[name].Callback.GameNotExists();
+                        }
+                        catch (Exception)
+                        {
+                            SecureDeleteClient(clientsDictionary[name]);
+                            return;
+                        }
+                    }
+                    return;
                 }
-                clientsDictionary[name].Callback.FatalError("Can't join game!");
-                Console.WriteLine("Client {0} wants to join game, but can't!", name);
+                Console.WriteLine("Client {0} wants to join game, but opponent does not exists!", name);
+                try
+                {
+                    clientsDictionary[name].Callback.FatalError("Opponent does not exists!");
+                }
+                catch (Exception)
+                {
+                    SecureDeleteClient(clientsDictionary[name]);
+                }
                 return;
             }
             Console.WriteLine("Unknown client: ({0}, {1}) wants to join game!", name, GUID);
-            OperationContext.Current.GetCallbackChannel<IClientCallback>().FatalError("Server don't know you!");
+            try
+            {
+                OperationContext.Current.GetCallbackChannel<IClientCallback>().FatalError("Server don't know you!");
+            }
+            catch (Exception) { }
         }
 
         public void ReadyForGame(string name, string GUID, bool[] field)

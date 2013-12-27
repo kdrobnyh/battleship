@@ -60,6 +60,9 @@
   <wsdl:message name="IBattleshipService_FatalError_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:FatalError" />
   </wsdl:message>
+  <wsdl:message name="IBattleshipService_GameNotExists_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:GameNotExists" />
+  </wsdl:message>
   <wsdl:message name="IBattleshipService_PrepareToGame_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:PrepareToGame" />
   </wsdl:message>
@@ -117,6 +120,9 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="FatalError">
       <wsdl:output wsaw:Action="http://tempuri.org/IBattleshipService/FatalError" message="tns:IBattleshipService_FatalError_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GameNotExists">
+      <wsdl:output wsaw:Action="http://tempuri.org/IBattleshipService/GameNotExists" message="tns:IBattleshipService_GameNotExists_OutputCallbackMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="PrepareToGame">
       <wsdl:output wsaw:Action="http://tempuri.org/IBattleshipService/PrepareToGame" message="tns:IBattleshipService_PrepareToGame_OutputCallbackMessage" />
@@ -214,6 +220,12 @@
     </wsdl:operation>
     <wsdl:operation name="FatalError">
       <soap12:operation soapAction="http://tempuri.org/IBattleshipService/FatalError" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GameNotExists">
+      <soap12:operation soapAction="http://tempuri.org/IBattleshipService/GameNotExists" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

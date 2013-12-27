@@ -28,7 +28,8 @@ namespace battleship_client
             SetContent(roomsPage);
             loginPage = new LoginPage(this);
             ((RoomsPage)this.Content).grid.Children.Add(loginPage);
-            loginPage.SetValue(Grid.RowSpanProperty, 2);
+            loginPage.SetValue(Grid.RowSpanProperty, 4);
+            loginPage.SetValue(Grid.ColumnSpanProperty, 2);
             this.Closing += Dispatcher_ShutdownStarted;
         }
 
@@ -83,6 +84,7 @@ namespace battleship_client
             this._GUID = GUID;
             ((RoomsPage)this.Content).grid.Children.Remove(loginPage);
             loginPage = null;
+            roomsPage.SetUsername(_name);
         }
 
         public void UserNameExists()
@@ -111,9 +113,28 @@ namespace battleship_client
             roomsPage.DeleteRoom(name);
         }
 
+        public void JoinGame(string name)
+        {
+            try
+            {
+                client.JoinGame(_name, _GUID, name);
+            }
+            catch (Exception exception)
+            {
+                CantConnectToServer(exception.Message);
+            }
+        }
+
         public void FatalError(string error)
         {
+            MessageBox.Show(error, "Fatal error! Closing...", MessageBoxButton.OK, MessageBoxImage.Error);
+            Application.Current.Shutdown();
+        }
 
+        public void GameNotExists()
+        {
+            MessageBox.Show("The game not exists or already started. Try again...", "You late...", MessageBoxButton.OK, MessageBoxImage.Information);
+            roomsPage.ResetButtons();
         }
 
         public void GoodField()
@@ -128,7 +149,8 @@ namespace battleship_client
 
         public void PrepareToGame(string opponent_name)
         {
-            throw new NotImplementedException();
+            //MessageBox.Show("Prepare to game with" + opponent_name, "Goood!", MessageBoxButton.OK, MessageBoxImage.Hand);
+            SetContent(new PreparePage(this));
         }
 
         public void StartGame()
@@ -143,18 +165,21 @@ namespace battleship_client
 
         public void YouCheated()
         {
-
+            roomsPage.ResetButtons();
+            SetContent(roomsPage);
+            MessageBox.Show("Your opponent cheated you...", "Sad but true...", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         public void CantConnectToServer(string message)
         {
             MessageBox.Show(message, "Can't connect to server!", MessageBoxButton.OK, MessageBoxImage.Error);
+            client = null;
             Application.Current.Shutdown();
         }
 
         private void Dispatcher_ShutdownStarted(object sender, EventArgs e)
         {
-            if (_GUID != "")
+            if (_GUID != "" && client != null)
             {
                 client.Leave(_name, _GUID);
             }

@@ -104,6 +104,11 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="GameNotExists">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
   <xs:element name="PrepareToGame">
     <xs:complexType>
       <xs:sequence>
