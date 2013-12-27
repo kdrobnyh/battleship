@@ -10,11 +10,18 @@ namespace battleship_client
     {
         private Main main;
         private bool []field;
-        public PreparePage(Main main)
+        public PreparePage(Main main, string opponent_name, string initial_chat)
         {
             InitializeComponent();
             this.main = main;
             field = new bool[100];
+            Greetings.Content = "Please, set you ships. You are playing with " + opponent_name;
+            textBlockMessages.Text = initial_chat;
+        }
+
+        public void PostMessage(string message)
+        {
+            textBlockMessages.Text = textBlockMessages.Text + message + "\n";
         }
 
         public void Retry()
@@ -53,6 +60,22 @@ namespace battleship_client
                 Style style = this.FindResource("EmptyCell") as Style;
                 cell.Style = style;
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            main.LeaveGame();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (messageInput.Text.Length > 0 || !string.IsNullOrEmpty(messageInput.Text))
+            {
+                main.SendMessage(messageInput.Text);
+                messageInput.Clear();
+            }
+            else
+                MessageBox.Show("Message is empty...", "Try again...", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 }

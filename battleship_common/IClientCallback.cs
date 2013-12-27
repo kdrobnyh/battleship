@@ -34,6 +34,9 @@ namespace battleship_common
         void PrepareToGame(string opponent_name);
 
         [OperationContract(IsOneWay = true)]
+        void TransferMessage(Message mess);
+
+        [OperationContract(IsOneWay = true)]
         void GoodField();
 
         [OperationContract(IsOneWay = true)]

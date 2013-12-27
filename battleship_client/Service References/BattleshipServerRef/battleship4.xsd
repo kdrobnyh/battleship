@@ -15,4 +15,15 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Room" nillable="true" type="tns:Room" />
+  <xs:complexType name="Message">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Author" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CreationTime" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Text" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="author" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="creationTime" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="message" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Message" nillable="true" type="tns:Message" />
 </xs:schema>

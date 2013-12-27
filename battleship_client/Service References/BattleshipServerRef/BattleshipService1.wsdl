@@ -36,11 +36,14 @@
   <wsdl:message name="IBattleshipService_JoinGame_InputMessage">
     <wsdl:part name="parameters" element="tns:JoinGame" />
   </wsdl:message>
-  <wsdl:message name="IBattleshipService_ReadyForGame_InputMessage">
-    <wsdl:part name="parameters" element="tns:ReadyForGame" />
+  <wsdl:message name="IBattleshipService_LeaveGame_InputMessage">
+    <wsdl:part name="parameters" element="tns:LeaveGame" />
   </wsdl:message>
   <wsdl:message name="IBattleshipService_SendMessage_InputMessage">
     <wsdl:part name="parameters" element="tns:SendMessage" />
+  </wsdl:message>
+  <wsdl:message name="IBattleshipService_ReadyForGame_InputMessage">
+    <wsdl:part name="parameters" element="tns:ReadyForGame" />
   </wsdl:message>
   <wsdl:message name="IBattleshipService_Turn_InputMessage">
     <wsdl:part name="parameters" element="tns:Turn" />
@@ -65,6 +68,9 @@
   </wsdl:message>
   <wsdl:message name="IBattleshipService_PrepareToGame_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:PrepareToGame" />
+  </wsdl:message>
+  <wsdl:message name="IBattleshipService_TransferMessage_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:TransferMessage" />
   </wsdl:message>
   <wsdl:message name="IBattleshipService_GoodField_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:GoodField" />
@@ -97,11 +103,14 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="JoinGame">
       <wsdl:input wsaw:Action="http://tempuri.org/IBattleshipService/JoinGame" message="tns:IBattleshipService_JoinGame_InputMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ReadyForGame">
-      <wsdl:input wsaw:Action="http://tempuri.org/IBattleshipService/ReadyForGame" message="tns:IBattleshipService_ReadyForGame_InputMessage" />
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="LeaveGame">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBattleshipService/LeaveGame" message="tns:IBattleshipService_LeaveGame_InputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SendMessage">
       <wsdl:input wsaw:Action="http://tempuri.org/IBattleshipService/SendMessage" message="tns:IBattleshipService_SendMessage_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ReadyForGame">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBattleshipService/ReadyForGame" message="tns:IBattleshipService_ReadyForGame_InputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Turn">
       <wsdl:input wsaw:Action="http://tempuri.org/IBattleshipService/Turn" message="tns:IBattleshipService_Turn_InputMessage" />
@@ -126,6 +135,9 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="PrepareToGame">
       <wsdl:output wsaw:Action="http://tempuri.org/IBattleshipService/PrepareToGame" message="tns:IBattleshipService_PrepareToGame_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="TransferMessage">
+      <wsdl:output wsaw:Action="http://tempuri.org/IBattleshipService/TransferMessage" message="tns:IBattleshipService_TransferMessage_OutputCallbackMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GoodField">
       <wsdl:output wsaw:Action="http://tempuri.org/IBattleshipService/GoodField" message="tns:IBattleshipService_GoodField_OutputCallbackMessage" />
@@ -176,14 +188,20 @@
         <soap12:body use="literal" />
       </wsdl:input>
     </wsdl:operation>
-    <wsdl:operation name="ReadyForGame">
-      <soap12:operation soapAction="http://tempuri.org/IBattleshipService/ReadyForGame" style="document" />
+    <wsdl:operation name="LeaveGame">
+      <soap12:operation soapAction="http://tempuri.org/IBattleshipService/LeaveGame" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="SendMessage">
       <soap12:operation soapAction="http://tempuri.org/IBattleshipService/SendMessage" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="ReadyForGame">
+      <soap12:operation soapAction="http://tempuri.org/IBattleshipService/ReadyForGame" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -232,6 +250,12 @@
     </wsdl:operation>
     <wsdl:operation name="PrepareToGame">
       <soap12:operation soapAction="http://tempuri.org/IBattleshipService/PrepareToGame" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TransferMessage">
+      <soap12:operation soapAction="http://tempuri.org/IBattleshipService/TransferMessage" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

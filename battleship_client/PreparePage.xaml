@@ -389,26 +389,28 @@
                 <RowDefinition Height="17*"/>
                 <RowDefinition Height="38"/>
             </Grid.RowDefinitions>
-            <Label Content="Please, set you ships. You are playing with" FontSize="15" Grid.Row="0"/>
+            <Label Name="Greetings" Content="Please, set you ships. You are playing with" FontSize="15" Grid.Row="0"/>
             <Label Content="Chat:" FontWeight="Bold" Grid.RowSpan="4" Grid.Row="1" />
             <Border BorderThickness="1" CornerRadius="2" BorderBrush="#FF4D485F" VerticalAlignment="Stretch" Grid.Row="2">
-                <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" Name="textBlockMessages">
-                </TextBlock>
+                <ScrollViewer>
+                    <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" Name="textBlockMessages" >
+                    </TextBlock>
+                </ScrollViewer>
             </Border>
             <Grid Grid.Row="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <TextBox Height="23" TextWrapping="Wrap" Text="" Margin="5"/>
-                <Button Content="Send" Grid.Column="1" Margin="5"/>
+                <TextBox Height="23" TextWrapping="Wrap" Text="" Margin="5" Name="messageInput"/>
+                <Button Content="Send" Grid.Column="1" Margin="5" Click="Button_Click_1"/>
             </Grid>
             <Grid Grid.Row="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <Button FontSize="18" Content="Exit" Margin="2"/>
+                <Button FontSize="18" Content="Exit" Margin="2" Click="Button_Click"/>
                 <Button FontSize="18" Content="Ready!" Grid.Column="1" Margin="2"/>
 
             </Grid>

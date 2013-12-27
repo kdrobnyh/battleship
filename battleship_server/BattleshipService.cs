@@ -1,11 +1,7 @@
 ﻿using battleship_common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
-using System.ServiceModel.Description;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace battleship_server
 {
@@ -135,16 +131,18 @@ namespace battleship_server
             return true;
         }
 
-        public void Leave()
+        public void LeaveGame()
         {
             if (_game != null)
             {
                 _game.Opponent.YouCheated();
             }
+            _game = null;
         }
 
         public void YouCheated()
         {
+            _game = null;
             try
             {
                 Callback.YouCheated();
@@ -166,15 +164,20 @@ namespace battleship_server
             return new Game(this);
         }
 
-        public void SendMessage()
+        public void SendMessage(string message)
         {
-
-
+            Message mess = new Message(_name, DateTime.Now, message);
+            _game.Opponent.RecieveMessage(mess);
+            RecieveMessage(mess);
         }
 
-        public void RecieveMessage()
+        public void RecieveMessage(Message mess)
         {
-
+            try
+            {
+                _callback.TransferMessage(mess);
+            }
+            catch (Exception) { };
         }
 
         public void DoTurn()
@@ -306,7 +309,7 @@ namespace battleship_server
         private void SecureDeleteClient(Client client)
         {
             clientsDictionary.Remove(client.Name);
-            client.Leave();
+            client.LeaveGame();
             bool deleted = client.DeleteRoom();
             if (deleted)
             {
@@ -342,7 +345,7 @@ namespace battleship_server
             }
             foreach (var client in clients)
             {
-                client.Leave();
+                client.LeaveGame();
                 bool deleted = client.DeleteRoom();
                 if (deleted)
                 {
@@ -421,6 +424,23 @@ namespace battleship_server
                 {
                     if (clientsDictionary[opponent_name].HaveRoom && !clientsDictionary[opponent_name].HaveGame)
                     {
+                        clientsDictionary[opponent_name].DeleteRoom();
+                        Console.WriteLine("Client {0} delete room!", name);
+                        List<Client> failed = new List<Client>();
+                        foreach (var client in clientsDictionary.Values)
+                        {
+                            if (client.Name == opponent_name)
+                                continue;
+                            try
+                            {
+                                client.Callback.RoomDeleted(opponent_name);
+                            }
+                            catch (Exception)
+                            {
+                                failed.Add(client);
+                            }
+                        }
+                        SecureDeleteClients(failed);
                         try
                         {
                             clientsDictionary[name].Callback.PrepareToGame(opponent_name);
@@ -591,14 +611,68 @@ namespace battleship_server
             Console.WriteLine("Unknown client: ({0}, {1}) wants to join game!", name, GUID);
             OperationContext.Current.GetCallbackChannel<IClientCallback>().FatalError("Server don't know you!");
         }
+
         public void SendMessage(string name, string GUID, string text)
         {
-            throw new NotImplementedException();
+            if (clientsDictionary.ContainsKey(name) && clientsDictionary[name].CheckGUID(GUID))
+            {
+                if (!clientsDictionary[name].HaveGame)
+                {
+                    Console.WriteLine("Client {0} not gaming now!)", name);
+                    try
+                    {
+                        clientsDictionary[name].Callback.FatalError("You are not gaming now!");
+                    }
+                    catch (Exception)
+                    {
+                        SecureDeleteClient(clientsDictionary[name]);
+                    }
+                    return;
+                }
+                Console.WriteLine("Client {0} send a message!)", name);
+                clientsDictionary[name].SendMessage(text);
+                return;
+            }
+            Console.WriteLine("Unknown client: ({0}, {1}) wants to send a message!", name, GUID);
+            try
+            {
+                OperationContext.Current.GetCallbackChannel<IClientCallback>().FatalError("Server don't know you!");
+            }
+            catch (Exception) { }
         }
 
         public void Turn(string name, string GUID, ShootType type, int x, int y)
         {
             throw new NotImplementedException();
+        }
+
+        public void LeaveGame(string name, string GUID)
+        {
+            if (clientsDictionary.ContainsKey(name) && clientsDictionary[name].CheckGUID(GUID))
+            {
+                if (!clientsDictionary[name].HaveGame)
+                {
+                    Console.WriteLine("Client {0} not gaming now!)", name);
+                    try
+                    {
+                        clientsDictionary[name].Callback.FatalError("You are not gaming now!");
+                    }
+                    catch (Exception)
+                    {
+                        SecureDeleteClient(clientsDictionary[name]);
+                    }
+                    return;
+                }
+                Console.WriteLine("Client {0} leaved game!)", name);
+                clientsDictionary[name].LeaveGame();
+                return;
+            }
+            Console.WriteLine("Unknown client: ({0}, {1}) wants to leave game!", name, GUID);
+            try
+            {
+                OperationContext.Current.GetCallbackChannel<IClientCallback>().FatalError("Server don't know you!");
+            }
+            catch (Exception) { }
         }
     }
 }

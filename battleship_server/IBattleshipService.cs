@@ -24,10 +24,13 @@ namespace battleship_server
         void JoinGame(string name, string GUID, string oponent_name);
 
         [OperationContract(IsOneWay = true)]
-        void ReadyForGame(string name, string GUID, bool []field);
+        void LeaveGame(string name, string GUID);
 
         [OperationContract(IsOneWay = true)]
-        void SendMessage(string name, string GUID, string text);
+        void SendMessage(string name, string GUID, string message);
+
+        [OperationContract(IsOneWay = true)]
+        void ReadyForGame(string name, string GUID, bool []field);
 
         [OperationContract(IsOneWay = true)]
         void Turn(string name, string GUID, ShootType type, int x, int y);

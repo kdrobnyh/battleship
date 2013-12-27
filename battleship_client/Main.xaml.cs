@@ -19,6 +19,7 @@ namespace battleship_client
         private string _name;
         LoginPage loginPage;
         RoomsPage roomsPage;
+        string chat;
 
         public Main()
         {
@@ -31,6 +32,14 @@ namespace battleship_client
             loginPage.SetValue(Grid.RowSpanProperty, 4);
             loginPage.SetValue(Grid.ColumnSpanProperty, 2);
             this.Closing += Dispatcher_ShutdownStarted;
+            chat = "";
+        }
+
+        private void rooms()
+        {
+            chat = "";
+            roomsPage.ResetButtons();
+            SetContent(roomsPage);
         }
 
         public void Join(string name)
@@ -99,6 +108,7 @@ namespace battleship_client
             {
                 WaitingOpponentPage waiting = new WaitingOpponentPage(this);
                 SetContent(waiting);
+                return;
             }
             roomsPage.AddRoom(room);
         }
@@ -109,6 +119,7 @@ namespace battleship_client
             {
                 roomsPage.ResetButtons();
                 SetContent(roomsPage);
+                return;
             }
             roomsPage.DeleteRoom(name);
         }
@@ -125,6 +136,19 @@ namespace battleship_client
             }
         }
 
+        public void LeaveGame()
+        {
+            try
+            {
+                client.LeaveGame(_name, _GUID);
+            }
+            catch (Exception exception)
+            {
+                CantConnectToServer(exception.Message);
+            }
+            rooms();
+        }
+
         public void FatalError(string error)
         {
             MessageBox.Show(error, "Fatal error! Closing...", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -134,7 +158,7 @@ namespace battleship_client
         public void GameNotExists()
         {
             MessageBox.Show("The game not exists or already started. Try again...", "You late...", MessageBoxButton.OK, MessageBoxImage.Information);
-            roomsPage.ResetButtons();
+            rooms();
         }
 
         public void GoodField()
@@ -147,10 +171,22 @@ namespace battleship_client
 
         }
 
+        public void SendMessage(string message)
+        {
+            try
+            {
+                client.SendMessage(_name, _GUID, message);
+            }
+            catch (Exception exception)
+            {
+                CantConnectToServer(exception.Message);
+            }
+        }
+
         public void PrepareToGame(string opponent_name)
         {
             //MessageBox.Show("Prepare to game with" + opponent_name, "Goood!", MessageBoxButton.OK, MessageBoxImage.Hand);
-            SetContent(new PreparePage(this));
+            SetContent(new PreparePage(this, opponent_name, chat));
         }
 
         public void StartGame()
@@ -163,10 +199,24 @@ namespace battleship_client
 
         }
 
+        public void TransferMessage(battleship_client.BattleshipServerRef.Message message)
+        {
+            string mess = "[" + message.Author + "," + message.CreationTime.ToShortTimeString() + "]: " + message.Text;
+            chat = chat + mess + "\n";
+            if ((Content as PreparePage) != null)
+            {
+                (Content as PreparePage).PostMessage(mess);
+            }
+
+            if ((Content as GamePage) != null)
+            {
+                //(Content as GamePage).PostMessage(mess);
+            }
+        }
+
         public void YouCheated()
         {
-            roomsPage.ResetButtons();
-            SetContent(roomsPage);
+            rooms();
             MessageBox.Show("Your opponent cheated you...", "Sad but true...", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
