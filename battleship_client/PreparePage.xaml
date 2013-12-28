@@ -407,11 +407,13 @@
             </Grid>
             <Grid Grid.Row="4">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="119*"/>
+                    <ColumnDefinition Width="108*"/>
+                    <ColumnDefinition Width="153*"/>
                 </Grid.ColumnDefinitions>
-                <Button FontSize="18" Content="Exit" Margin="2" Click="Button_Click"/>
-                <Button Name="ReadyButton" FontSize="18" Content="Ready!" Grid.Column="1" Margin="2" Click="Button_Click_2"/>
+                <Button Name="RandomButton" FontSize="18" Content="Random" Margin="2" Click="Button_Click_3" Grid.Column="0"/>
+                <Button FontSize="18" Content="Exit" Margin="2" Click="Button_Click" Grid.Column="1"/>
+                <Button Name="ReadyButton" FontSize="18" Content="Ready!" Grid.Column="2" Margin="2" Click="Button_Click_2"/>
 
             </Grid>
         </Grid>

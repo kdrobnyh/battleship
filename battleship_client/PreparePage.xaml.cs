@@ -6,6 +6,36 @@ using System.Windows.Shapes;
 
 namespace battleship_client
 {
+
+    class SmartField
+    {
+        public SmartField()
+        {
+            field = new bool[100];
+            for (int i = 0; i < 100; i++)
+            {
+                field[i] = false;
+            }
+        }
+        private bool[] field;
+        public void Set(int x, int y)
+        {
+            if (x >= 0 && x < 10 && y >= 0 && y < 10)
+            {
+                field[x + y * 10] = true;
+            }
+        }
+        public bool Get(int x, int y)
+        {
+            if (x >= 0 && x < 10 && y >= 0 && y < 10)
+            {
+                return field[x + y * 10];
+            }
+            return true;
+        }
+    }
+
+
     public partial class PreparePage : UserControl
     {
         private Main main;
@@ -92,7 +122,75 @@ namespace battleship_client
         {
             ready = true;
             ReadyButton.IsEnabled = false;
+            RandomButton.IsEnabled = false;
             main.CheckField(field);
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            Random rand = new Random((int)DateTimeOffset.Now.UtcTicks);
+            int ship_length = 4;
+            for (int i = 0; i < 100; i++)
+            {
+                if (field[i])
+                {
+                    Rectangle cell = (Rectangle)FindName(string.Format("cell{0}", i));
+                    cell.Style = this.FindResource("EmptyCell") as Style;
+                    field[i] = false;
+                }
+            }
+            SmartField sf = new SmartField();
+            while (ship_length > 0)
+            {
+                for (int i = 0; i < 5 - ship_length; i++)
+                {
+                    int dx = 0, dy = 0, maxx = 10, maxy = 10;
+                    if (rand.Next() % 2 == 0)
+                    {
+                        dx = 1;
+                        maxx = 10 - ship_length + 1;
+                    }
+                    else
+                    {
+                        dy = 1;
+                        maxy = 10 - ship_length + 1;
+                    }
+                    bool placed = false;
+                    while (!placed)
+                    {
+                        int x = rand.Next(maxx);
+                        int y = rand.Next(maxy);
+                        bool empty = true;
+                        for (int j = 0; j < ship_length; j++)
+                        {
+                            if (sf.Get(x + dx * j, y + dy * j))
+                            {
+                                empty = false;
+                            }
+                        }
+                        if (empty)
+                        {
+                            placed = true;
+                            for (int j = 0; j < ship_length; j++)
+                            {
+                                int place = x + dx * j + (y + dy * j) * 10;
+                                field[place] = true;
+                                Rectangle cell = (Rectangle)FindName(string.Format("cell{0}", place));
+                                cell.Style = this.FindResource("FilledCell") as Style;
+                            }
+                            int k, l;
+                            for (k = x - 1; k <= x + dx * (ship_length-1) + 1; k++)
+                            {
+                                for (l = y - 1; l <= y + dy * (ship_length-1) + 1; l++)
+                                {
+                                    sf.Set(k, l);
+                                }
+                            }
+                        }
+                    }
+                }
+                ship_length--;
+            }
         }
 
         public void GoodField()
@@ -106,6 +204,7 @@ namespace battleship_client
             MessageBox.Show(message, "Wrong placements...", MessageBoxButton.OK, MessageBoxImage.Warning);
             ready = false;
             ReadyButton.IsEnabled = true;
+            RandomButton.IsEnabled = true;
         }
 
         public GamePage GetGamePage()
