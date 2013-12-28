@@ -9,6 +9,11 @@ namespace battleship_common
 {
     public enum ShootType {Shoot};
 
+    public enum Cell
+    {
+        Empty, Ship, Fire, DeadShip, Missed
+    }
+
     [ServiceContract]
     public interface IClientCallback
     {
@@ -47,6 +52,21 @@ namespace battleship_common
 
         [OperationContract(IsOneWay = true)]
         void YouTurn();
+
+        [OperationContract(IsOneWay = true)]
+        void UpdateYourField(int x, int y, Cell state);
+
+        [OperationContract(IsOneWay = true)]
+        void AlreadyClicked();
+
+        [OperationContract(IsOneWay = true)]
+        void UpdateOpponentField(int x, int y, Cell state);
+
+        [OperationContract(IsOneWay = true)]
+        void Win();
+
+        [OperationContract(IsOneWay = true)]
+        void Loose();
 
         [OperationContract(IsOneWay = true)]
         void YouCheated();

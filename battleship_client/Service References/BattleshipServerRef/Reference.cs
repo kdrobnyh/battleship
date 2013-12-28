@@ -138,6 +138,26 @@ namespace battleship_client.BattleshipServerRef {
         }
     }
     
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Cell", Namespace="http://schemas.datacontract.org/2004/07/battleship_common")]
+    public enum Cell : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Empty = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Ship = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Fire = 2,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        DeadShip = 3,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Missed = 4,
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="BattleshipServerRef.IBattleshipService", CallbackContract=typeof(battleship_client.BattleshipServerRef.IBattleshipServiceCallback), SessionMode=System.ServiceModel.SessionMode.Required)]
     public interface IBattleshipService {
@@ -235,6 +255,21 @@ namespace battleship_client.BattleshipServerRef {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/YouTurn")]
         void YouTurn();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/UpdateYourField")]
+        void UpdateYourField(int x, int y, battleship_client.BattleshipServerRef.Cell state);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/AlreadyClicked")]
+        void AlreadyClicked();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/UpdateOpponentField")]
+        void UpdateOpponentField(int x, int y, battleship_client.BattleshipServerRef.Cell state);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/Win")]
+        void Win();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/Loose")]
+        void Loose();
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IBattleshipService/YouCheated")]
         void YouCheated();

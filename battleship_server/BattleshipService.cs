@@ -14,10 +14,6 @@ namespace battleship_server
             
         }
         private Cell[,] field;
-        public enum Cell
-        {
-            Empty, Fire, DeadShip, Missed
-        }
 
         public Cell GetCell(int x, int y)
         {
@@ -44,11 +40,29 @@ namespace battleship_server
         }
     }
 
+    class Point
+    {
+        public Point()
+        {
+            x = y = 0;
+        }
+        public Point(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+        public int x;
+        public int y;
+    }
+
     class Game
     {
         public Game(Client opponent)
         {
             this.opponent = opponent;
+            this.field = new Field();
+            my_turn = false;
+            ships = 10;
         }
         private Client opponent;
         public Client Opponent
@@ -58,15 +72,26 @@ namespace battleship_server
                 return opponent;
             }
         }
-        public void SetField()
+        public void SetField(bool []field)
         {
-
+            int pos = 0, i, j;
+            for (i = 0; i < 10; i++)
+            {
+                for (j = 0; j < 10; j++)
+                {
+                    this.field.SetCell(j, i, field[pos] ? Cell.Ship : Cell.Empty);
+                    pos++;
+                }
+            }
+            ships = 10;
         }
         public Field field;
         public int four_count;
         public int three_count;
         public int two_count;
         public int one_count;
+        public bool my_turn;
+        public int ships;
     }
 
 
@@ -78,6 +103,7 @@ namespace battleship_server
         private string _name;
         private Room _room;
         private Game _game;
+        private bool _ready;
 
         public Client(IClientCallback callback, string name)
         {
@@ -92,6 +118,7 @@ namespace battleship_server
             }
             _room = null;
             _game = null;
+            _ready = false;
         }
 
         public IClientCallback Callback
@@ -153,6 +180,7 @@ namespace battleship_server
         public void JoinTo(Client opponent)
         {
             _game = opponent.LetsPlay(this);
+            _ready = false;
         }
 
         public Game LetsPlay(Client opponent)
@@ -161,6 +189,7 @@ namespace battleship_server
             {
                 _game = new Game(opponent);
             }
+            _ready = false;
             return new Game(this);
         }
 
@@ -180,15 +209,368 @@ namespace battleship_server
             catch (Exception) { };
         }
 
-        public void DoTurn()
+        public void DoTurn(int x, int y)
         {
-
+            if (_game != null)
+            {
+                if (_game.my_turn)
+                {
+                    _game.my_turn = false;
+                    _game.Opponent.GetTurn(x, y);
+                }
+            }
         }
 
-        public void Turn()
+        private bool ListContained(List<Point> list, int x, int y)
         {
+            foreach (var point in list)
+            {
+                if (point.x == x && point.y == y)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
+        public void GetTurn(int x, int y)
+        {
+            if (_game != null)
+            {
+                if (_game.field.GetCell(x, y) == Cell.Empty)
+                {
+                    _game.field.SetCell(x, y, Cell.Missed);
+                    try
+                    {
+                        _callback.UpdateYourField(x, y, Cell.Missed);
+                    }
+                    catch (Exception) { }
+                    try
+                    {
+                        _game.Opponent.UpdateOpponentField(x, y, Cell.Missed);
+                    }
+                    catch (Exception) { }
+                    YouTurn();
+                    return;
+                }
+                if (_game.field.GetCell(x, y) == Cell.DeadShip || _game.field.GetCell(x, y) == Cell.Fire || _game.field.GetCell(x, y) == Cell.Missed)
+                {
+                    _game.Opponent.AlreadyClicked();
+                    _game.Opponent.YouTurn();
+                    return;
+                }
+                List<Point> list = new List<Point>();
+                list.Add(new Point(x, y));
+                _game.field.SetCell(x, y, Cell.Fire);
+                bool killed = true;
+                for (int i = 0; i < list.Count; i++)
+                {
+                    int lx = list[i].x;
+                    int ly = list[i].y;
+                    if (lx > 0)
+                    {
+                        if (_game.field.GetCell(lx-1, ly) == Cell.Ship)
+                        {
+                            killed = false;
+                            break;
+                        }
+                        if (_game.field.GetCell(lx-1, ly) == Cell.Fire && !ListContained(list, lx-1, ly))
+                        {
+                            list.Add(new Point(lx - 1, ly));
+                        }
+                    }
+                    if (lx < 9)
+                    {
+                        if (_game.field.GetCell(lx + 1, ly) == Cell.Ship)
+                        {
+                            killed = false;
+                            break;
+                        }
+                        if (_game.field.GetCell(lx + 1, ly) == Cell.Fire && !ListContained(list, lx + 1, ly))
+                        {
+                            list.Add(new Point(lx + 1, ly));
+                        }
+                    }
+                    if (ly > 0)
+                    {
+                        if (_game.field.GetCell(lx, y-1) == Cell.Ship)
+                        {
+                            killed = false;
+                            break;
+                        }
+                        if (_game.field.GetCell(lx, ly-1) == Cell.Fire && !ListContained(list, lx, ly-1))
+                        {
+                            list.Add(new Point(lx, ly-1));
+                        }
+                    }
+                    if (ly < 9)
+                    {
+                        if (_game.field.GetCell(lx, ly+1) == Cell.Ship)
+                        {
+                            killed = false;
+                            break;
+                        }
+                        if (_game.field.GetCell(lx, ly+1) == Cell.Fire && !ListContained(list, lx, ly+1))
+                        {
+                            list.Add(new Point(lx, ly+1));
+                        }
+                    }
+                }
+                if (!killed)
+                {
+                    try
+                    {
+                        _callback.UpdateYourField(x, y, Cell.Fire);
+                    }
+                    catch (Exception) { }
+                    try
+                    {
+                        _game.Opponent.UpdateOpponentField(x, y, Cell.Fire);
+                    }
+                    catch (Exception) { }
+                    _game.Opponent.YouTurn();
+                    return;
+                }
+                for (int i = 0; i < list.Count; i++)
+                {
+                    int lx = list[i].x;
+                    int ly = list[i].y; 
+                    if (lx > 0)
+                    {
+                        if (_game.field.GetCell(lx - 1, ly) == Cell.Empty)
+                        {
+                            _game.field.SetCell(lx - 1, ly, Cell.Missed);
+                            try
+                            {
+                                _callback.UpdateYourField(lx - 1, ly, Cell.Missed);
+                            }
+                            catch (Exception) { }
+                            try
+                            {
+                                _game.Opponent.UpdateOpponentField(lx - 1, ly, Cell.Missed);
+                            }
+                            catch (Exception) { }
+                        }
+                    }
+                    if (lx > 0 && ly > 0)
+                    {
+                        if (_game.field.GetCell(lx - 1, ly-1) == Cell.Empty)
+                        {
+                            _game.field.SetCell(lx - 1, ly-1, Cell.Missed);
+                            try
+                            {
+                                _callback.UpdateYourField(lx - 1, ly-1, Cell.Missed);
+                            }
+                            catch (Exception) { }
+                            try
+                            {
+                                _game.Opponent.UpdateOpponentField(lx - 1, ly-1, Cell.Missed);
+                            }
+                            catch (Exception) { }
+                        }
+                    }
+                    if (ly > 0)
+                    {
+                        if (_game.field.GetCell(lx, ly-1) == Cell.Empty)
+                        {
+                            _game.field.SetCell(lx, ly-1, Cell.Missed);
+                            try
+                            {
+                                _callback.UpdateYourField(lx, ly-1, Cell.Missed);
+                            }
+                            catch (Exception) { }
+                            try
+                            {
+                                _game.Opponent.UpdateOpponentField(lx, ly-1, Cell.Missed);
+                            }
+                            catch (Exception) { }
+                        }
+                    }
+                    if (ly > 0 && lx < 9)
+                    {
+                        if (_game.field.GetCell(lx+1, ly-1) == Cell.Empty)
+                        {
+                            _game.field.SetCell(lx+1, ly-1, Cell.Missed);
+                            try
+                            {
+                                _callback.UpdateYourField(lx+1, ly-1, Cell.Missed);
+                            }
+                            catch (Exception) { }
+                            try
+                            {
+                                _game.Opponent.UpdateOpponentField(lx+1, ly-1, Cell.Missed);
+                            }
+                            catch (Exception) { }
+                        }
+                    }
+                    if (lx < 9)
+                    {
+                        if (_game.field.GetCell(lx+1, ly) == Cell.Empty)
+                        {
+                            _game.field.SetCell(lx+1, ly, Cell.Missed);
+                            try
+                            {
+                                _callback.UpdateYourField(lx+1, ly, Cell.Missed);
+                            }
+                            catch (Exception) { }
+                            try
+                            {
+                                _game.Opponent.UpdateOpponentField(lx+1, ly, Cell.Missed);
+                            }
+                            catch (Exception) { }
+                        }
+                    }
 
+                    if (lx < 9 && ly < 9)
+                    {
+                        if (_game.field.GetCell(lx+1, ly+1) == Cell.Empty)
+                        {
+                            _game.field.SetCell(lx+1, ly+1, Cell.Missed);
+                            try
+                            {
+                                _callback.UpdateYourField(lx+1, ly+1, Cell.Missed);
+                            }
+                            catch (Exception) { }
+                            try
+                            {
+                                _game.Opponent.UpdateOpponentField(lx+1, ly+1, Cell.Missed);
+                            }
+                            catch (Exception) { }
+                        }
+                    }
+                    if (ly < 9)
+                    {
+                        if (_game.field.GetCell(lx, ly+1) == Cell.Empty)
+                        {
+                            _game.field.SetCell(lx, ly+1, Cell.Missed);
+                            try
+                            {
+                                _callback.UpdateYourField(lx, ly+1, Cell.Missed);
+                            }
+                            catch (Exception) { }
+                            try
+                            {
+                                _game.Opponent.UpdateOpponentField(lx, ly+1, Cell.Missed);
+                            }
+                            catch (Exception) { }
+                        }
+                    }
+                    if (lx > 0 && ly < 9)
+                    {
+                        if (_game.field.GetCell(lx-1, ly+1) == Cell.Empty)
+                        {
+                            _game.field.SetCell(lx-1, ly+1, Cell.Missed);
+                            try
+                            {
+                                _callback.UpdateYourField(lx-1, ly+1, Cell.Missed);
+                            }
+                            catch (Exception) { }
+                            try
+                            {
+                                _game.Opponent.UpdateOpponentField(lx-1, ly+1, Cell.Missed);
+                            }
+                            catch (Exception) { }
+                        }
+                    }
+                    _game.field.SetCell(lx, ly, Cell.DeadShip);
+                    try
+                    {
+                        _callback.UpdateYourField(lx, ly, Cell.DeadShip);
+                    }
+                    catch (Exception) { }
+                    try
+                    {
+                        _game.Opponent.UpdateOpponentField(lx, ly, Cell.DeadShip);
+                    }
+                    catch (Exception) { }
+                }
+                _game.ships--;
+                if (_game.ships == 0)
+                {
+                    try
+                    {
+                        _game.Opponent.Win();
+                    }
+                    catch (Exception) { }
+                    try
+                    {
+                        _callback.Loose();
+                    }
+                    catch (Exception) { }
+                    Client client = _game.Opponent;
+                    _game = null;
+                    client.JoinTo(this);
+                    return;
+                }
+                _game.Opponent.YouTurn();
+                return;
+            }
+        }
+
+        public void UpdateOpponentField(int x, int y, Cell type)
+        {
+            try
+            {
+                _callback.UpdateOpponentField(x, y, type);
+            }
+            catch (Exception) { }
+        }
+
+        public void AlreadyClicked()
+        {
+            try
+            {
+                _callback.AlreadyClicked();
+            }
+            catch (Exception) { }
+        }
+
+        public void Win()
+        {
+            try
+            {
+                _callback.Win();
+            }
+            catch (Exception) { }
+        }
+
+        public void YouTurn()
+        {
+            _game.my_turn = true;
+            try
+            {
+                _callback.YouTurn();
+            }
+            catch (Exception) { }
+        }
+
+        public void SetField(bool[] field)
+        {
+            if (_game != null)
+            {
+                _game.SetField(field);
+                _ready = true;
+                if (!IsOpponentReady())
+                    _game.my_turn = true;
+            }
+        }
+
+        public bool IsOpponentReady()
+        {
+            if (_game != null)
+            {
+                return _game.Opponent.Ready; 
+            }
+            return false;
+        }
+
+        public string Opponent()
+        {
+            if (_game != null)
+            {
+                return _game.Opponent.Name;
+            }
+            return "";
         }
 
         public static List<Room> Rooms
@@ -212,6 +594,14 @@ namespace battleship_server
             get
             {
                 return _game != null;
+            }
+        }
+
+        public bool Ready
+        {
+            get
+            {
+                return _ready;
             }
         }
     }
@@ -501,13 +891,27 @@ namespace battleship_server
                 if (!clientsDictionary[name].HaveGame)
                 {
                     Console.WriteLine("Client {0} can't own game!", name);
-                    OperationContext.Current.GetCallbackChannel<IClientCallback>().FatalError("");
+                    try
+                    {
+                        clientsDictionary[name].Callback.FatalError("You are not gaming!");
+                    }
+                    catch (Exception)
+                    {
+                        SecureDeleteClient(clientsDictionary[name]);
+                    }
                     return;
                 }
                 if (field.Length != 100)
                 {
                     Console.WriteLine("Client {0} send wrong field (size != 100)!", name);
-                    OperationContext.Current.GetCallbackChannel<IClientCallback>().BadField("Wrong size of field!");
+                    try
+                    {
+                        clientsDictionary[name].Callback.BadField("Wrong size of field!");
+                    }
+                    catch (Exception)
+                    {
+                        SecureDeleteClient(clientsDictionary[name]);
+                    }
                     return;
                 }
                 int[] ships_count = new int[5];
@@ -517,13 +921,23 @@ namespace battleship_server
                     if (field[i] && cell_status[i] == 2)
                     {
                         Console.WriteLine("Client {0} send wrong field (ship touch another ship)!", name, GUID);
-                        clientsDictionary[name].Callback.BadField("Ship touch another ship!");
+                        try
+                        {
+                            clientsDictionary[name].Callback.BadField("Ship touch another ship!");
+                        }
+                        catch (Exception)
+                        {
+                            SecureDeleteClient(clientsDictionary[name]);
+                        }
                         return;
                     }
                     if (field[i] && cell_status[i] == 0)
                     {
                         int horizontal_length = 1;
-                        int j = i;
+                        cell_status[i] = 1;
+                        if (i < 90)
+                            cell_status[i + 10] = 2;
+                        int j = i+1;
                         while (j % 10 != 0 && field[j])
                         {
                             horizontal_length += 1;
@@ -543,7 +957,14 @@ namespace battleship_server
                             if (horizontal_length > 4)
                             {
                                 Console.WriteLine("Client {0} send ship which horizontal length > 4!", name, GUID);
-                                clientsDictionary[name].Callback.BadField("Wrong ship length!");
+                                try
+                                {
+                                    clientsDictionary[name].Callback.BadField("Wrong ship length!");
+                                }
+                                catch (Exception)
+                                {
+                                    SecureDeleteClient(clientsDictionary[name]);
+                                }
                                 return;
                             }
                             ships_count[horizontal_length]++;
@@ -551,7 +972,12 @@ namespace battleship_server
                         else
                         {
                             int vertical_length = 1;
-                            j = i;
+                            cell_status[i] = 1;
+                            if (i % 10 != 0)
+                                cell_status[i - 1] = 2;
+                            if (i % 10 != 9)
+                                cell_status[i + 1] = 2;
+                            j = i+10;
                             while (j < 100 && field[j])
                             {
                                 vertical_length += 1;
@@ -573,7 +999,14 @@ namespace battleship_server
                             if (vertical_length > 4)
                             {
                                 Console.WriteLine("Client {0} send ship which vertical length > 4!", name, GUID);
-                                clientsDictionary[name].Callback.BadField("Wrong ship length!");
+                                try
+                                {
+                                    clientsDictionary[name].Callback.BadField("Wrong ship length!");
+                                }
+                                catch (Exception)
+                                {
+                                    SecureDeleteClient(clientsDictionary[name]);
+                                }
                                 return;
                             }
                             ships_count[vertical_length]++;
@@ -583,33 +1016,105 @@ namespace battleship_server
                 if (ships_count[1] != 4)
                 {
                     Console.WriteLine("Client {0} send wrong field (wrong ships number)!", name, GUID);
-                    clientsDictionary[name].Callback.BadField("Wrong ship number!");
+                    try
+                    {
+                        clientsDictionary[name].Callback.BadField("Wrong ship number!");
+                    }
+                    catch (Exception)
+                    {
+                        SecureDeleteClient(clientsDictionary[name]);
+                    }
                     return;
                 }
                 if (ships_count[2] != 3)
                 {
                     Console.WriteLine("Client {0} send wrong field (wrong ships number)!", name, GUID);
-                    clientsDictionary[name].Callback.BadField("Wrong ship number!");
+                    try
+                    {
+                        clientsDictionary[name].Callback.BadField("Wrong ship number!");
+                    }
+                    catch (Exception)
+                    {
+                        SecureDeleteClient(clientsDictionary[name]);
+                    }
                     return;
                 }
                 if (ships_count[3] != 2)
                 {
                     Console.WriteLine("Client {0} send wrong field (wrong ships number)!", name, GUID);
-                    clientsDictionary[name].Callback.BadField("Wrong ship number!");
+                    try
+                    {
+                        clientsDictionary[name].Callback.BadField("Wrong ship number!");
+                    }
+                    catch (Exception)
+                    {
+                        SecureDeleteClient(clientsDictionary[name]);
+                    }
                     return;
                 }
                 if (ships_count[4] != 1)
                 {
                     Console.WriteLine("Client {0} send wrong field (wrong ships number)!", name, GUID);
-                    clientsDictionary[name].Callback.BadField("Wrong ship number!");
+                    try
+                    {
+                        clientsDictionary[name].Callback.BadField("Wrong ship number!");
+                    }
+                    catch (Exception)
+                    {
+                        SecureDeleteClient(clientsDictionary[name]);
+                    }
                     return;
                 }
                 Console.WriteLine("Client {0} send good field!", name, GUID);
-                clientsDictionary[name].Callback.GoodField();
+                try
+                {
+                    clientsDictionary[name].Callback.GoodField();
+                }
+                catch (Exception)
+                {
+                    SecureDeleteClient(clientsDictionary[name]);
+                    return;
+                }
+                clientsDictionary[name].SetField(field);
+                if (clientsDictionary[name].IsOpponentReady())
+                {
+                    try
+                    {
+                        clientsDictionary[name].Callback.StartGame();
+                    }
+                    catch (Exception)
+                    {
+                        SecureDeleteClient(clientsDictionary[name]);
+                        return;
+                    }
+                    try
+                    {
+                        clientsDictionary[clientsDictionary[name].Opponent()].Callback.StartGame();
+                    }
+                    catch (Exception)
+                    {
+                        SecureDeleteClient(clientsDictionary[name]);
+                    }
+                    try
+                    {
+                        clientsDictionary[clientsDictionary[name].Opponent()].Callback.YouTurn();
+                    }
+                    catch (Exception)
+                    {
+                        SecureDeleteClient(clientsDictionary[name]);
+                    }
+
+                    return;
+                }
                 return;
             }
             Console.WriteLine("Unknown client: ({0}, {1}) wants to join game!", name, GUID);
-            OperationContext.Current.GetCallbackChannel<IClientCallback>().FatalError("Server don't know you!");
+            try
+            {
+                OperationContext.Current.GetCallbackChannel<IClientCallback>().FatalError("Server don't know you!");
+            }
+            catch (Exception)
+            { }
         }
 
         public void SendMessage(string name, string GUID, string text)
@@ -629,7 +1134,7 @@ namespace battleship_server
                     }
                     return;
                 }
-                Console.WriteLine("Client {0} send a message!)", name);
+                Console.WriteLine("Client {0} send a message!", name);
                 clientsDictionary[name].SendMessage(text);
                 return;
             }
@@ -642,11 +1147,6 @@ namespace battleship_server
         }
 
         public void Turn(string name, string GUID, ShootType type, int x, int y)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void LeaveGame(string name, string GUID)
         {
             if (clientsDictionary.ContainsKey(name) && clientsDictionary[name].CheckGUID(GUID))
             {
@@ -663,7 +1163,36 @@ namespace battleship_server
                     }
                     return;
                 }
-                Console.WriteLine("Client {0} leaved game!)", name);
+                Console.WriteLine("Client {0} did a turn!", name);
+                clientsDictionary[name].DoTurn(x, y);
+                return;
+            }
+            Console.WriteLine("Unknown client: ({0}, {1}) wants to shoot (everybody wants)!", name, GUID);
+            try
+            {
+                OperationContext.Current.GetCallbackChannel<IClientCallback>().FatalError("Server don't know you!");
+            }
+            catch (Exception) { }
+        }
+
+        public void LeaveGame(string name, string GUID)
+        {
+            if (clientsDictionary.ContainsKey(name) && clientsDictionary[name].CheckGUID(GUID))
+            {
+                if (!clientsDictionary[name].HaveGame)
+                {
+                    Console.WriteLine("Client {0} not gaming now!", name);
+                    try
+                    {
+                        clientsDictionary[name].Callback.FatalError("You are not gaming now!");
+                    }
+                    catch (Exception)
+                    {
+                        SecureDeleteClient(clientsDictionary[name]);
+                    }
+                    return;
+                }
+                Console.WriteLine("Client {0} leaved game!", name);
                 clientsDictionary[name].LeaveGame();
                 return;
             }

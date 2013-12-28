@@ -20,6 +20,7 @@ namespace battleship_client
         LoginPage loginPage;
         RoomsPage roomsPage;
         string chat;
+        string opponent_name;
 
         public Main()
         {
@@ -163,12 +164,18 @@ namespace battleship_client
 
         public void GoodField()
         {
-
+            if ((Content as PreparePage) != null)
+            {
+                (Content as PreparePage).GoodField();
+            }
         }
 
         public void BadField(string comment)
         {
-
+            if ((Content as PreparePage) != null)
+            {
+                (Content as PreparePage).BadField(comment);
+            }
         }
 
         public void SendMessage(string message)
@@ -183,25 +190,56 @@ namespace battleship_client
             }
         }
 
+        public void CheckField(bool[] field)
+        {
+            try
+            {
+                client.ReadyForGame(_name, _GUID, field);
+            }
+            catch (Exception exception)
+            {
+                CantConnectToServer(exception.Message);
+            }
+        }
+
         public void PrepareToGame(string opponent_name)
         {
             //MessageBox.Show("Prepare to game with" + opponent_name, "Goood!", MessageBoxButton.OK, MessageBoxImage.Hand);
+            this.opponent_name = opponent_name;
             SetContent(new PreparePage(this, opponent_name, chat));
         }
 
         public void StartGame()
         {
-
+            if ((Content as PreparePage) != null)
+            {
+                SetContent((Content as PreparePage).GetGamePage());
+            }
         }
 
         public void YouTurn()
         {
+            if ((Content as GamePage) != null)
+            {
+                (Content as GamePage).YouTurn();
+            }
+        }
 
+        public void DoTurn(int x, int y)
+        {
+            try
+            {
+                client.Turn(_name, _GUID, ShootType.Shoot, x, y);
+            }
+            catch (Exception exception)
+            {
+                CantConnectToServer(exception.Message);
+            }
         }
 
         public void TransferMessage(battleship_client.BattleshipServerRef.Message message)
         {
-            string mess = "[" + message.Author + "," + message.CreationTime.ToShortTimeString() + "]: " + message.Text;
+            string mess = "[" + message.Author + "," + message.CreationTime.ToString("HH:mm:ss") + "]: " + message.Text;
             chat = chat + mess + "\n";
             if ((Content as PreparePage) != null)
             {
@@ -210,7 +248,7 @@ namespace battleship_client
 
             if ((Content as GamePage) != null)
             {
-                //(Content as GamePage).PostMessage(mess);
+                (Content as GamePage).PostMessage(mess);
             }
         }
 
@@ -233,6 +271,39 @@ namespace battleship_client
             {
                 client.Leave(_name, _GUID);
             }
+        }
+
+        public void UpdateYourField(int x, int y, battleship_client.BattleshipServerRef.Cell state)
+        {
+            if ((Content as GamePage) != null)
+            {
+                (Content as GamePage).UpdateYourField(x, y, state);
+            }
+        }
+
+        public void UpdateOpponentField(int x, int y, battleship_client.BattleshipServerRef.Cell state)
+        {
+            if ((Content as GamePage) != null)
+            {
+                (Content as GamePage).UpdateOpponentField(x, y, state);
+            }
+        }
+
+        public void AlreadyClicked()
+        {
+            MessageBox.Show("You are already clicks on this cell. Try another..", "Try again", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
+        public void Win()
+        {
+            MessageBox.Show("Cool! You WIN!!!", "Congratulations!", MessageBoxButton.OK, MessageBoxImage.Information);
+            SetContent(new PreparePage(this, opponent_name, chat));
+        }
+
+        public void Loose()
+        {
+            MessageBox.Show("You are looser=)", "Congratulations!", MessageBoxButton.OK, MessageBoxImage.Information);
+            SetContent(new PreparePage(this, opponent_name, chat));
         }
     }
 }

@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>kbattleship.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
     <Reference Include="PresentationUI, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -62,11 +65,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="PreparePage.xaml.cs">
-      <DependentUpon>PreparePage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="GamePage.xaml.cs">
       <DependentUpon>GamePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PreparePage.xaml.cs">
+      <DependentUpon>PreparePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="WaitCircle.xaml.cs">
       <DependentUpon>WaitCircle.xaml</DependentUpon>
@@ -82,11 +85,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Page Include="PreparePage.xaml">
+    <Page Include="GamePage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="GamePage.xaml">
+    <Page Include="PreparePage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -197,6 +200,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\BattleshipServerRef\battleship1.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="kbattleship.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -84,6 +84,21 @@
   <wsdl:message name="IBattleshipService_YouTurn_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:YouTurn" />
   </wsdl:message>
+  <wsdl:message name="IBattleshipService_UpdateYourField_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:UpdateYourField" />
+  </wsdl:message>
+  <wsdl:message name="IBattleshipService_AlreadyClicked_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:AlreadyClicked" />
+  </wsdl:message>
+  <wsdl:message name="IBattleshipService_UpdateOpponentField_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:UpdateOpponentField" />
+  </wsdl:message>
+  <wsdl:message name="IBattleshipService_Win_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:Win" />
+  </wsdl:message>
+  <wsdl:message name="IBattleshipService_Loose_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:Loose" />
+  </wsdl:message>
   <wsdl:message name="IBattleshipService_YouCheated_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:YouCheated" />
   </wsdl:message>
@@ -150,6 +165,21 @@
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="YouTurn">
       <wsdl:output wsaw:Action="http://tempuri.org/IBattleshipService/YouTurn" message="tns:IBattleshipService_YouTurn_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdateYourField">
+      <wsdl:output wsaw:Action="http://tempuri.org/IBattleshipService/UpdateYourField" message="tns:IBattleshipService_UpdateYourField_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AlreadyClicked">
+      <wsdl:output wsaw:Action="http://tempuri.org/IBattleshipService/AlreadyClicked" message="tns:IBattleshipService_AlreadyClicked_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdateOpponentField">
+      <wsdl:output wsaw:Action="http://tempuri.org/IBattleshipService/UpdateOpponentField" message="tns:IBattleshipService_UpdateOpponentField_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Win">
+      <wsdl:output wsaw:Action="http://tempuri.org/IBattleshipService/Win" message="tns:IBattleshipService_Win_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Loose">
+      <wsdl:output wsaw:Action="http://tempuri.org/IBattleshipService/Loose" message="tns:IBattleshipService_Loose_OutputCallbackMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="YouCheated">
       <wsdl:output wsaw:Action="http://tempuri.org/IBattleshipService/YouCheated" message="tns:IBattleshipService_YouCheated_OutputCallbackMessage" />
@@ -280,6 +310,36 @@
     </wsdl:operation>
     <wsdl:operation name="YouTurn">
       <soap12:operation soapAction="http://tempuri.org/IBattleshipService/YouTurn" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateYourField">
+      <soap12:operation soapAction="http://tempuri.org/IBattleshipService/UpdateYourField" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AlreadyClicked">
+      <soap12:operation soapAction="http://tempuri.org/IBattleshipService/AlreadyClicked" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateOpponentField">
+      <soap12:operation soapAction="http://tempuri.org/IBattleshipService/UpdateOpponentField" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Win">
+      <soap12:operation soapAction="http://tempuri.org/IBattleshipService/Win" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Loose">
+      <soap12:operation soapAction="http://tempuri.org/IBattleshipService/Loose" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>
