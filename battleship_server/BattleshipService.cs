@@ -819,8 +819,8 @@ namespace battleship_server
                         List<Client> failed = new List<Client>();
                         foreach (var client in clientsDictionary.Values)
                         {
-                            if (client.Name == opponent_name)
-                                continue;
+                            //if (client.Name == opponent_name)
+                            //    continue;
                             try
                             {
                                 client.Callback.RoomDeleted(opponent_name);

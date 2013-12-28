@@ -30,7 +30,7 @@
         <Style x:Key="MissedCell" TargetType="Rectangle">
             <Setter Property="Stroke" Value="DarkCyan"/>
             <Setter Property="StrokeThickness" Value="1"/>
-            <Setter Property="Fill" Value="Black"/>
+            <Setter Property="Fill" Value="DarkCyan"/>
         </Style>
     </UserControl.Resources>
     <Grid x:Name="LayoutRoot" Background="White" Margin="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">

@@ -4,17 +4,18 @@ using System.Windows.Controls;
 
 namespace battleship_client
 {
-    public partial class WaitingOpponentPage : UserControl
+    public partial class WaitPage : UserControl
     {
         private Main main;
-        public WaitingOpponentPage(Main main)
+        public WaitPage(Main main)
         {
             InitializeComponent();
             this.main = main;
         }
 
-        private void backButton_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
+            Back.IsEnabled = false;
             main.DeleteRoom();
         }
     }

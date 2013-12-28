@@ -19,6 +19,7 @@ namespace battleship_client
         private string _name;
         LoginPage loginPage;
         RoomsPage roomsPage;
+        WaitPage waitPage;
         string chat;
         string opponent_name;
 
@@ -107,8 +108,10 @@ namespace battleship_client
         {
             if (room.Name == _name)
             {
-                WaitingOpponentPage waiting = new WaitingOpponentPage(this);
-                SetContent(waiting);
+                waitPage = new WaitPage(this);
+                ((RoomsPage)this.Content).grid.Children.Add(waitPage);
+                waitPage.SetValue(Grid.RowSpanProperty, 4);
+                waitPage.SetValue(Grid.ColumnSpanProperty, 2);
                 return;
             }
             roomsPage.AddRoom(room);
@@ -118,8 +121,10 @@ namespace battleship_client
         {
             if (name == _name)
             {
+
                 roomsPage.ResetButtons();
-                SetContent(roomsPage);
+                //SetContent(roomsPage);
+                roomsPage.grid.Children.Remove(waitPage);
                 return;
             }
             roomsPage.DeleteRoom(name);
@@ -291,7 +296,7 @@ namespace battleship_client
 
         public void AlreadyClicked()
         {
-            MessageBox.Show("You are already clicks on this cell. Try another..", "Try again", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //MessageBox.Show("You are already clicks on this cell. Try another..", "Try again", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         public void Win()
